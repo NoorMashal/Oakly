@@ -1,0 +1,36 @@
+{% load django_bootstrap5 %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oakley | Login</title>
+
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        main {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <main class="container-fluid p-4">
+        {% block content %}
+        {% endblock %}
+
+        <div class="text-center mt-4">
+            <a class="btn btn-outline-primary" href="{% provider_login_url 'google' %}?next=/home/">
+                Continue with Google
+            </a>
+        </div>
+    </main>
+</body>
+</html>

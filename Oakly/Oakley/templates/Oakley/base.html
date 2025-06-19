@@ -1,0 +1,67 @@
+{% load django_bootstrap5 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oakley</title>
+    <style>
+        #sidebar {
+            width: 250px;
+            height: 100vh;
+        }
+
+        #page-content {
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        main {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .navbar .btn-logout {
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+    </style>
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0A2463;">
+    <div class="container-fluid p-0 px-3 d-flex justify-content-between align-items-center">
+        <a class="navbar-brand" href="{% url 'Oakley:home' %}">Oakley</a>
+
+        <!-- Logout on right -->
+        <a href="{% url 'Oakley:logout' %}" class="btn btn-outline-light btn-logout">
+            Logout
+        </a>
+    </div>
+</nav>
+
+<!-- Layout -->
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div id="sidebar" class="bg-light border-end">
+        {% include 'Oakley/sidebar.html' %}
+    </div>
+
+    <!-- Page Content -->
+    <div class="flex-grow-1" id="page-content">
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

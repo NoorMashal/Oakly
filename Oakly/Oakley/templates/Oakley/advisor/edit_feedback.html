@@ -1,0 +1,29 @@
+{% extends "Oakley/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Feedback for
+        {% if meeting.user.get_full_name %}
+            {{ meeting.user.get_full_name }}
+        {% else %}
+            {{ meeting.user }}
+        {% endif %}
+    </h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger mt-3">
+            <strong>Please fix the errors below.</strong>
+        </div>
+        {% endif %}
+
+        {% bootstrap_form form %}
+
+        <button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Save Changes</button>
+        <a href="{% url 'Oakley:advisor_meetings' %}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}

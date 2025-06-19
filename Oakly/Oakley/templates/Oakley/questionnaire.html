@@ -1,0 +1,175 @@
+{% load django_bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <meta charset="UTF-8">
+    <title>Questionnaire</title>
+</head>
+<body>
+    <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+        <div class="card shadow p-4 w-100" style="max-width: 800px;">
+            <h2 class="text-center mb-4">Financial Questionnaire</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label for="question"><strong>What is your average monthly net income?</strong></label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">$</span>
+                        <input type="number" step="0.01" name="monthly_income" class="form-control" aria-label="Amount (to the nearest dollar)" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="question"><strong>How predictable is your income?</strong></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="income_stability" value="I receive a regular paycheck (e.g., fixed salary)." id="fixed" required>
+                        <label class="form-check-label" for="fixed">
+                            I receive a regular paycheck (e.g., fixed salary).
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="income_stability" value="My income varies each month (e.g., freelance, commission)." id="vary" required>
+                        <label class="form-check-label" for="vary">
+                            My income varies each month (e.g., freelance, commission).
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="question"><strong>Which of these best describe your fixed monthly expenses? (Select all that apply)</strong></label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="recurring_bills" value="Rent or mortgage" id="rent">
+                      <label class="form-check-label" for="rent">
+                        Rent or mortgage
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="recurring_bills" value="Utilities (electricity, water, etc.)" id="utilities">
+                      <label class="form-check-label" for="utilities">
+                        Utilities (electricity, water, etc.)
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="recurring_bills" value="Internet/phone" id="internet">
+                      <label class="form-check-label" for="internet">
+                        Internet/phone
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="recurring_bills" value="Insurance (health, car, etc.)" id="insurance">
+                      <label class="form-check-label" for="insurance">
+                        Insurance (health, car, etc.)
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="recurring_bills" value="Loan payments" id="loan">
+                      <label class="form-check-label" for="loan">
+                        Loan payments
+                      </label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="question"><strong>What are your largest non-fixed spending areas? (Select all that apply)</strong></label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="variable_spending" value="Groceries" id="grocery">
+                      <label class="form-check-label" for="grocery">
+                        Groceries
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="variable_spending" value="Dining out" id="dining">
+                      <label class="form-check-label" for="dining">
+                        Dining out
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="variable_spending" value="Transportation (gas, public transit)" id="transportation">
+                      <label class="form-check-label" for="transportation">
+                        Transportation (gas, public transit)
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="variable_spending" value="Entertainment" id="entertainment">
+                      <label class="form-check-label" for="entertainment">
+                        Entertainment
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="variable_spending" value="Miscellaneous (shopping, hobbies, etc.)" id="miscellaneous">
+                      <label class="form-check-label" for="miscellaneous">
+                        Miscellaneous (shopping, hobbies, etc.)
+                      </label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="question"><strong>What is your main financial goal right now?</strong></label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="primary_goal" value="Building savings" id="savings">
+                      <label class="form-check-label" for="savings">
+                        Building savings
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="primary_goal" value="Paying off debt" id="debt">
+                      <label class="form-check-label" for="debt">
+                          Paying off debt
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="primary_goal" value="Keeping better track of my spending" id="track">
+                      <label class="form-check-label" for="track">
+                        Keeping better track of my spending
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="primary_goal" value="Planning for a major purchase (e.g., home, car)" id="purchase">
+                      <label class="form-check-label" for="purchase">
+                        Planning for a major purchase (e.g., home, car)
+                      </label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="question"><strong>What is your savings goal?</strong></label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">$</span>
+                        <input type="number" step="0.01" name="savings_goal" class="form-control" aria-label="Amount (to the nearest dollar)" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="question"><strong>Have you tried tracking your expenses before?</strong></label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="expense_tracking" value="Yes, regularly" id="regular">
+                      <label class="form-check-label" for="regular">
+                        Yes, regularly
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="expense_tracking" value="Occasionally" id="occasionally">
+                      <label class="form-check-label" for="occasionally">
+                          Occasionally
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="expense_tracking" value="Not yet" id="none">
+                      <label class="form-check-label" for="none">
+                        Not yet
+                      </label>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends "Oakley/base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block extra_styles %}
+
+{% endblock %}
+
+{% block content %}
+    {% if meeting.call_url %}
+    {% else %}
+        <p>No meeting URL available.</p>
+    {% endif %}
+
+{% endblock %}
+

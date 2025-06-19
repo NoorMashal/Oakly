@@ -1,0 +1,48 @@
+{% extends 'Oakley/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Budget Planning</h2>
+
+    <div class="card p-4 shadow-sm">
+        <h4 class="mb-3">Recommended Monthly Budget</h4>
+        <div class="mb-3">
+            <p>
+                Based on your current income and savings goal, we recommend keeping your monthly spending below:
+                <strong>${{ recommended_budget }}</strong>
+            </p>
+        </div>
+
+        <div class="card p-3 bg-light border">
+            <h5 class="mb-2">Budget Breakdown</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Estimated Fixed Expenses:</span>
+                    <strong>${{ estimated_fixed }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Estimated Variable Expenses:</span>
+                    <strong>${{ estimated_variable }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Remaining "Safe-to-Spend":</span>
+                    {% if safe_to_spend is not None %}
+                        <strong class="{% if safe_to_spend < 0 %}text-danger{% else %}text-success{% endif %}">${{ safe_to_spend }}</strong>
+                    {% else %}
+                        <strong class="text-muted">N/A</strong>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card p-4 mt-4 shadow-sm">
+        <h5>Quick Tips</h5>
+        <ul>
+            <li>Track every expense to avoid leaks in your budget.</li>
+            <li>Use the <a href="{% url 'Oakley:transactions' %}">Transactions</a> tab to monitor monthly activity.</li>
+            <li>Update your income or savings goals anytime in your <a href="{% url 'Oakley:profile' %}">Profile</a>.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

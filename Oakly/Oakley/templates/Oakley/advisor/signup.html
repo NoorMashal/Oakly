@@ -1,0 +1,63 @@
+{% load django_bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <meta charset="UTF-8">
+    <title>Advisor Signup</title>
+</head>
+<body>
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="text-center my-4 fw-bold">Advisor Sign Up</h2>
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% endif %}
+            <form method="post" class="p-4 shadow-lg rounded bg-white border">
+                {% csrf_token %}
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="firstName" class="form-label fw-semibold">First Name</label>
+                        <input type="text" name="firstName" id="firstName" class="form-control form-control-lg rounded-pill" placeholder="Enter first name">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lastName" class="form-label fw-semibold">Last Name</label>
+                        <input type="text" name="lastName" id="lastName" class="form-control form-control-lg rounded-pill" placeholder="Enter last name">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phoneNumber" class="form-label fw-semibold">Phone Number</label>
+                    <input type="text" name="phoneNumber" class="form-control form-control-lg rounded-pill" id="phoneNumber" placeholder="(XXX) - XXX - XXXX">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold">Email Address</label>
+                    <input type="email" name="email" class="form-control form-control-lg rounded-pill" id="email" placeholder="name@example.com">
+                </div>
+
+                <div class="mb-3">
+                    <label for="text" class="form-label fw-semibold">Username</label>
+                    <input type="text" name="username" class="form-control form-control-lg rounded-pill" id="username" aria-label="Username">
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <input type="password" name="password" id="password" class="form-control form-control-lg rounded-pill" aria-label="Password">
+                    <div class="form-text text-muted">Must be at least 8 characters long and contain letters and/or numbers.</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="confirmPassword" class="form-label fw-semibold">Confirm Password</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" class="form-control form-control-lg rounded-pill">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill fw-bold">Sign Up</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

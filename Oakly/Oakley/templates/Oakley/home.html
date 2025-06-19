@@ -1,0 +1,340 @@
+{% extends "Oakley/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="flex-container" style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+        <h2>Welcome, {{ user.username }}! 🎉</h2>
+         <form method="POST" action="{% url 'Oakley:home' %}">
+             {% csrf_token %}
+             <button type="submit" id="confirm-button" class="btn btn-primary">Generate AI Feedback</button>
+        </form>
+    </div>
+    <p>Track your finances and plan for a better financial future.</p>
+
+    <!-- Financial Overview Cards -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">💰 Total Balance</div>
+                <div class="card-body">
+                    <h4 class="card-title">${{ total_balance|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">📈 Monthly Income</div>
+                <div class="card-body">
+                    <h4 class="card-title">${{ total_income|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">📉 Monthly Spending</div>
+                <div class="card-body">
+                    <h4 class="card-title">${{ total_spending|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">📊 Suggested Spending</div>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        {% if recommended_budget %}
+                            ${{ recommended_budget|floatformat:2 }}
+                        {% else %}
+                            Not available
+                        {% endif %}
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Charts Row -->
+    <div class="row mt-4">
+        <!-- Category Pie Chart -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Spending by Category 🍕</h5>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px;">
+                        <canvas id="categoryPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Method Chart -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Payment Methods 💳</h5>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px;">
+                        <canvas id="paymentMethodChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Income vs Expenses Chart -->
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Monthly Income vs Expenses 📊</h5>
+        </div>
+        <div class="card-body">
+            <div style="height: 300px;">
+                <canvas id="monthlyComparisonChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Spending vs. Income -->
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Daily Spending Trend 📈</h5>
+        </div>
+        <div class="card-body">
+            <div style="height: 300px;">
+                <canvas id="spendingChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recent Transactions 🔄</h5>
+            <a href="{% url 'Oakley:transactions' %}" class="btn btn-sm btn-light">View All</a>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Merchant</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in recent_transactions %}
+                        <tr>
+                            <td>{{ transaction.date|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if transaction.category == 'Entertainment' %}bg-info
+                                    {% elif transaction.category == 'Groceries' %}bg-success
+                                    {% elif transaction.category == 'Dining' %}bg-warning
+                                    {% elif transaction.category == 'Travel' %}bg-secondary
+                                    {% elif transaction.category == 'Gas' %}bg-danger
+                                    {% elif transaction.category == 'Healthcare' %}bg-primary
+                                    {% elif transaction.category == 'Subscriptions' %}bg-dark
+                                    {% elif transaction.category == 'Online Shopping' %}bg-info
+                                    {% else %}bg-light text-dark
+                                    {% endif %}">
+                                    {{ transaction.category }}
+                                </span>
+                            </td>
+                            <td>{{ transaction.merchant }}</td>
+                            <td>${{ transaction.amount|floatformat:2 }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No recent transactions</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">AI Feedback</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{ response }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if open_modal %}
+            var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+            myModal.show();
+        {% endif %}
+    });
+</script>
+
+<!-- JavaScript for Charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Daily Spending Chart (from your existing code)
+        let ctx = document.getElementById("spendingChart").getContext("2d");
+        let chartData = JSON.parse('{{ chart_data|escapejs }}');
+
+        // Format the labels to be more readable
+        const formattedLabels = chartData.labels.map(dateStr => {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+        });
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: formattedLabels,
+                datasets: [
+                    {
+                        label: "Income",
+                        data: chartData.income,
+                        borderColor: "green",
+                        backgroundColor: "rgba(0, 255, 0, 0.2)",
+                        fill: true
+                    },
+                    {
+                        label: "Expenses",
+                        data: chartData.expenses,
+                        borderColor: "red",
+                        backgroundColor: "rgba(255, 0, 0, 0.2)",
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount ($)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Category Pie Chart
+        const categoryData = JSON.parse('{{ category_data|escapejs }}');
+        const categoryColors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+            '#FF9F40', '#8AC24A', '#607D8B', '#E91E63', '#3F51B5'
+        ];
+
+        new Chart(document.getElementById('categoryPieChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: categoryData.labels,
+                datasets: [{
+                    data: categoryData.values,
+                    backgroundColor: categoryColors.slice(0, categoryData.labels.length),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+
+        // Payment Method Chart
+        const paymentMethodData = JSON.parse('{{ payment_method_data|escapejs }}');
+
+        new Chart(document.getElementById('paymentMethodChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: paymentMethodData.labels,
+                datasets: [{
+                    data: paymentMethodData.values,
+                    backgroundColor: ['#4CAF50', '#2196F3', '#FFC107'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+
+        const monthlyComparison = JSON.parse('{{ monthly_comparison|escapejs }}');
+
+        new Chart(document.getElementById('monthlyComparisonChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: monthlyComparison.months,
+                datasets: [
+                    {
+                        label: 'Income',
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 1,
+                        data: monthlyComparison.income
+                    },
+                    {
+                        label: 'Expenses',
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        borderWidth: 1,
+                        data: monthlyComparison.expenses
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

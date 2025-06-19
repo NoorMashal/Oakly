@@ -1,0 +1,88 @@
+{% extends "Oakley/advisor/base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'Oakley/css/meetings.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h3 class="mb-4">Upcoming Meetings</h3>
+        {% if meetings %}
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                {% for meet in meetings %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Meeting with
+                                    <a href="{% url 'Oakley:advisor_user_dashboard' meet.user.id %}">
+                                        {{ meet.user.username }}
+                                    </a>
+                                </h5>
+
+                                <p class="card-text">
+                                    <strong>Date:</strong> {{ meet.date|date:"F j, Y" }} ({{ meet.day_of_week }})<br>
+                                    <strong>Time:</strong> {{ meet.start_time }} - {{ meet.end_time }}
+                                </p>
+
+                                {% if meet.call_url %}
+                                    <a href="{{ meet.call_url }}" target="_blank" class="btn btn-success me-2">Join Meeting</a>
+                                {% else %}
+                                    <button class="btn btn-secondary" disabled>No URL</button>
+                                {% endif %}
+
+                                <form action="{% url 'Oakley:complete_meeting' meeting_id=meet.id %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-primary" type="submit">Complete</button>
+                                </form>
+
+                                <form action="{% url 'Oakley:cancel_meeting' meeting_id=meet.id %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-danger" type="submit">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No upcoming meetings.</p>
+        {% endif %}
+
+        <h3 class="mt-5 mb-3">Previous Meetings</h3>
+		{% if prev_meetings %}
+			<ul class="list-group">
+				{% for meet in prev_meetings %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            Meeting with {{ meet.user.username}} on {{ meet.date|date:"F j, Y" }} ({{ meet.day_of_week }})
+                            from {{ meet.start_time }} to {{ meet.end_time }}
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            {% if meet.status == 'completed' or meet.status == 'canceled' %}
+                                {% if meet.feedback %}
+                                    <a href="{% url 'Oakley:edit_feedback' meet.id %}" class="btn btn-sm btn-outline-warning">
+                                        Edit Feedback
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'Oakley:give_feedback' meet.id %}" class="btn btn-sm btn-outline-primary">
+                                        Give Feedback
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                            <span class="badge
+                                {% if meet.status == 'completed' %}bg-success
+                                {% elif meet.status == 'canceled' %}bg-danger
+                                {% endif %}">
+                                {{ meet.status|capfirst }}
+                            </span>
+                        </div>
+                    </li>
+                {% endfor %}
+			</ul>
+		{% else %}
+			<p>No previous meetings.</p>
+		{% endif %}
+	</div>
+{% endblock %}

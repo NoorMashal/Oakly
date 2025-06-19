@@ -1,0 +1,41 @@
+{% extends "Oakley/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4">Give Feedback</h3>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                Meeting with
+                {% if meeting.user.get_full_name %}
+                    {{ meeting.user.get_full_name }}
+                {% else %}
+                    {{ meeting.user }}
+                {% endif %}
+                on {{ meeting.date|date:"F j, Y" }} ({{ meeting.day_of_week }})
+            </h5>
+            <p class="card-text">
+                <strong>Time:</strong> {{ meeting.start_time }} - {{ meeting.end_time }}<br>
+                <strong>Status:</strong> {{ meeting.status|capfirst }}
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div class="alert alert-danger mt-2">
+                    <strong>Please correct the errors below.</strong>
+                </div>
+                {% endif %}
+
+                {% bootstrap_form form %}
+
+                <button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">Submit Feedback</button>
+                <a href="{% url 'Oakley:advisor_meetings' %}" class="btn btn-secondary ms-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

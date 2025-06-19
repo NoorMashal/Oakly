@@ -1,0 +1,51 @@
+<!-- Ensure Bootstrap Icons are included -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+    .advisor-sidebar {
+        height: 100vh;
+        width: 250px;
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+    }
+
+    .advisor-sidebar .nav-link {
+        font-weight: 500;
+        color: #333;
+        border-radius: 0.375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .advisor-sidebar .nav-link:hover {
+        background-color: #e9ecef;
+        color: #000;
+    }
+
+    .advisor-sidebar .nav-link.active {
+        background-color: #0A2463;
+        color: #fff !important;
+    }
+</style>
+
+<div class="advisor-sidebar d-flex flex-column">
+    <a href="{% url 'Oakley:advisor_home' %}" class="d-flex align-items-center mb-4 text-dark text-decoration-none">
+        <span class="fs-4"><i class="bi bi-briefcase-fill me-2"></i>Advisor Portal</span>
+    </a>
+
+    <hr>
+
+    <ul class="nav nav-pills flex-column mb-auto gap-1">
+        <li>
+            <a href="{% url 'Oakley:advisor_meetings' %}" class="nav-link {% if request.resolver_match.url_name == 'advisor_meetings' %}active{% endif %}">
+                <i class="bi bi-calendar-check-fill"></i> Upcoming Meetings
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'Oakley:advisor_profile' %}" class="nav-link {% if request.resolver_match.url_name == 'advisor_profile' %}active{% endif %}">
+                <i class="bi bi-person-badge-fill"></i> My Profile
+            </a>
+        </li>
+    </ul>
+</div>

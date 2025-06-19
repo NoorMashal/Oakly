@@ -1,0 +1,112 @@
+{% load django_bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <meta charset="UTF-8">
+    <title>Advisor Questionnaire</title>
+</head>
+<body>
+    <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+        <div class="card shadow p-4 w-100" style="max-width: 800px;">
+            <h2 class="text-center mb-4">Advisor Questionnaire</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label for="firm_name"><strong>Firm Name</strong></label>
+                    <div class="input-group mb-3">
+                        <input type="text" name="firm_name" class="form-control" placeholder="Enter your firm's name" aria-label="" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="certifications"><strong>Professional Certifications</strong></label>
+                    <div class="input-group mb-3">
+                        <input type="text" name="certifications" class="form-control" placeholder="e.g., CFP, CFA, CPA" aria-label="" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="experience"><strong>Years of Experience</strong></label>
+                    <div class="input-group mb-3">
+                        <input type="number" name="experience" class="form-control" placeholder="Enter number of years" aria-label="" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="bio"><strong>Professional Bio</strong></label>
+                    <div class="input-group mb-3">
+                        <textarea name="bio" class="form-control" placeholder="Briefly describe your expertise, specialties, and what drives you" rows="4" aria-label="" required></textarea>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="specialties"><strong>Areas of Specialization</strong></label>
+                    <div class="input-group mb-3">
+                        <input type="text" name="specialties" class="form-control" placeholder="e.g., Investment Planning, Retirement Strategies" aria-label="" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="website"><strong>Website</strong></label>
+                    <div class="input-group mb-3">
+                        <input type="url" name="website" class="form-control" placeholder="Enter your website URL" aria-label="" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="linkedin"><strong>LinkedIn Profile</strong></label>
+                    <div class="input-group mb-3">
+                        <input type="url" name="linkedin" class="form-control" placeholder="Enter your LinkedIn profile URL" aria-label="" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="location"><strong>Location</strong></label>
+                    <div class="input-group mb-3">
+                        <input type="text" name="location" class="form-control" placeholder="City, State" aria-label="" required>
+                    </div>
+                </div>
+
+                <h5 class="mt-5 mb-3">Weekly Availability</h5>
+
+                <table class="table table-bordered table-striped text-center align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Day</th>
+                        <th>Available?</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for day in days %}
+                        <tr>
+                            <td>{{ day }}</td>
+                            <td>
+                                <input type="checkbox" name="{{ day }}_available" class="form-check-input">
+                            </td>
+                            <td>
+                                <input type="time" name="{{ day }}_start" class="form-control">
+                            </td>
+                            <td>
+                                <input type="time" name="{{ day }}_end" class="form-control">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
